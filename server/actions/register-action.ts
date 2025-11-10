@@ -5,7 +5,7 @@ import { actionClient } from "./safe-action";
 
 import bcrypt from "bcrypt";
 import { eq } from "drizzle-orm";
-import { db } from "..";
+import { db } from "@/server"
 import { users } from "./../schema";
 import { generateEmailVerificationToken } from "./tokens";
 import { sendEmail } from "./emails";

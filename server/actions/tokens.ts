@@ -1,6 +1,6 @@
 "use server"
 import { eq } from "drizzle-orm";
-import { emailVerificationToken, users } from "./../schema";
+import { emailVerificationToken, resetPasswordVerificationToken, users } from "./../schema";
 import { db } from "..";
 
 
@@ -78,3 +78,36 @@ export const confirmEmailWithToken = async (token: string) => {
   return { success: "Email verified successfully!"}
 
 } 
+
+const checkResetPasswordToken = async (email: string) => {
+  try {
+    const passwordResetToken  = await db.query.emailVerificationToken.findFirst({
+      where: eq(emailVerificationToken.email, email)
+    })
+    return passwordResetToken
+  }
+  catch (error) {
+    return null
+  }
+};
+
+export const generatePasswordResetToken = async (email: string) => {
+  const token = crypto.randomUUID();
+  const expires = new Date(new Date().getTime() + 30 * 60 * 1000);
+
+  const existingToken = await checkResetPasswordToken(email);
+
+  if (existingToken) {
+    await db
+      .delete(resetPasswordVerificationToken)
+      .where(eq(resetPasswordVerificationToken.id, existingToken.id));
+  }
+
+  const passwordResetToken = await db.insert(resetPasswordVerificationToken).values({
+    email,
+    token,
+    expires,
+  }).returning();
+  
+  return passwordResetToken;
+};

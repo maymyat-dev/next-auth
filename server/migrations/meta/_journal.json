@@ -15,6 +15,13 @@
       "when": 1759740947905,
       "tag": "0001_real_deathstrike",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1762748616217,
+      "tag": "0002_sour_skin",
+      "breakpoints": true
     }
   ]
 }

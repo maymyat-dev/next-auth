@@ -1,5 +1,6 @@
 "use server";
 import EmailConfirmationTemplate from "@/components/email-template";
+import resetPasswordEmailTemplate, { ResetPasswordEmailTemplate } from "@/components/password-reset";
 import { getBaseUrl } from "@/lib/get-baseUrl";
 import { Resend } from "resend";
 
@@ -21,6 +22,26 @@ export const sendEmail = async (
       userFirstname,
       confirmEmailLink: confirmLink,
     }),
+  });
+
+  if (error) {
+    console.log(error);
+  }
+};
+
+export const sendPasswordResetEmail = async (
+  email: string,
+  token: string,
+) => {
+  const resetLink = `${currentBaseUrl}/change-password?token=${token}`;
+
+  const { data, error } = await resend.emails.send({
+    from: "Acme <onboarding@resend.dev>",
+    to: ["" + email],
+    subject: "Confirm your email to complete your reset password",
+    react: resetPasswordEmailTemplate({
+      resetPasswordLink: resetLink
+    })
   });
 
   if (error) {

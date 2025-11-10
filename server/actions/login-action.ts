@@ -1,7 +1,7 @@
 "use server";
 import { loginSchema } from "@/types/login-schema";
 import { actionClient } from "./safe-action";
-import { db } from "..";
+import { db } from "@/server"
 import { users } from "../schema";
 import { eq } from "drizzle-orm";
 import { generateEmailVerificationToken } from "./tokens";

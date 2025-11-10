@@ -94,7 +94,7 @@ const Register = () => {
                 </Link>
               </div>
         </div>
-        <Button type="submit" className={cn("w-full bg-primary", status === "executing" && "animate-pulse") } disabled={status === "executing"}>Register</Button>
+        <Button type="submit" className={cn("w-full bg-primary mt-5", status === "executing" && "animate-pulse") } disabled={status === "executing"}>Register</Button>
         </form>
         
      </Form>
