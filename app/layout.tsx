@@ -1,7 +1,10 @@
+import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
 import { GeistSans } from 'geist/font/sans'; 
-import "./globals.css";
+
 import { Toaster, toast } from 'sonner'
+import "./globals.css";
+
 
 
 export const metadata: Metadata = {
@@ -15,12 +18,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={GeistSans.className}>
+    <html lang="en" className={GeistSans.className} suppressHydrationWarning>
       <body
         className={`antialiased` } 
       >
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem >
+          <div className="min-h-screen bg-background text-foreground">
+            {children}
         <Toaster position="top-center" richColors closeButton />
+          </div>
+          
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,4 +1,5 @@
 "use server"
+
 import { eq } from "drizzle-orm";
 import { emailVerificationToken, resetPasswordVerificationToken, users } from "./../schema";
 import { db } from "..";
@@ -111,3 +112,10 @@ export const generatePasswordResetToken = async (email: string) => {
   
   return passwordResetToken;
 };
+
+export const checkPasswordResetTokenByToken = async (token: string) => {
+  const passwordResetToken = await db.query.resetPasswordVerificationToken.findFirst({
+    where: eq(resetPasswordVerificationToken.token, token)
+  })
+  return passwordResetToken
+}
