@@ -1,7 +1,7 @@
 "use server";
 import { loginSchema } from "@/types/login-schema";
 import { actionClient } from "./safe-action";
-import { db } from "@/server"
+import { db } from "@/server";
 import { users } from "../schema";
 import { eq } from "drizzle-orm";
 import { generateEmailVerificationToken } from "./tokens";
@@ -16,9 +16,17 @@ export const login = actionClient
       const existingUser = await db.query.users.findFirst({
         where: eq(users.email, email),
       });
+      
       if (existingUser?.email !== email) {
         return {
           error: "Please check your valid credentials",
+        };
+      }
+
+      if (!existingUser.password) {
+        return {
+          error:
+            "This email is registered via Google/Github. Please use social login.",
         };
       }
 
@@ -42,9 +50,11 @@ export const login = actionClient
       if (error instanceof AuthError) {
         switch (error.type) {
           case "CredentialsSignin":
-            return { error: "Please provide valid credentials" };
+            return { error: "Invalid email or password" };
           case "OAuthSignInError":
-            return { error: "error.message" };
+            return { error: error.message };
+          default:
+            return { error: "An unknown authentication error occurred." };
         }
       }
       throw error;
