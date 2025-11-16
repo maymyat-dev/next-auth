@@ -6,7 +6,7 @@ const NavLogo = () => {
   return (
       <Link href={'/'} className='flex items-center'>
           <ShoppingCart className='mr-2' size={20} />
-          <span className='font-bold text-lg'>Shopping</span>
+          <span className='font-bold text-lg'>TechStore</span>
         </Link>
   )
 }

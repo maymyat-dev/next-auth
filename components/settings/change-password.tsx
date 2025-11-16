@@ -60,7 +60,11 @@ const ChangePassword = ({ email }: ChangePasswordProps) => {
   return (
     <SettingCard>
       <div className="flex justify-between items-center">
-        <p>Change Password</p>
+        <div>
+          <h3 className="text-base font-semibold tracking-tight mb-2">Change Password</h3>
+          <p className="text-sm text-muted-foreground">You can change a new password for your account.</p>
+        </div>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Button

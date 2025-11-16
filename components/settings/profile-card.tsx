@@ -2,7 +2,6 @@
 import { Session } from "next-auth";
 import React, { useState } from "react";
 import { SettingCard } from "./settings-card";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { UserRoundPen } from "lucide-react";
 import {
   Dialog,
@@ -28,6 +27,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import ProfileForm from "./profile-form";
+import AvatarUploadForm from "./avatar-upload-form";
 
 type ProfileCardProps = {
   session: Session;
@@ -44,17 +44,8 @@ const ProfileCard = ({ session }: ProfileCardProps) => {
   return (
     <SettingCard>
       <div className="flex justify-between items-start gap-2 rounded-2xl">
-        <div className="md:flex flex-none items-center md:gap-2 mb">
-          <Avatar>
-            <AvatarImage
-              src={session.user?.image!}
-              alt="Profile"
-              className="w-12 h-12 bg-cover rounded-full"
-            />
-            <AvatarFallback className="bg-primary text-white font-bold">
-              {session.user?.name?.slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+        <div className="md:flex flex-none md:gap-2 mb">
+          <AvatarUploadForm name={ session.user?.name! } image={session.user?.image} email={session.user?.email!} />
           <div className="mt-2 md:mt-0">
             <h3 className="text-lg font-semibold">{session.user?.name}</h3>
             <p className="text-sm text-muted-foreground">

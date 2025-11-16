@@ -55,7 +55,7 @@ const TwoFactorAuthentication = ({
 
   return (
     <SettingCard >
-      <div className="p-6 rounded-xl border bg-card shadow-sm hover:shadow-md transition-shadow">
+     
       <Form {...form}>
         <FormField
           control={form.control}
@@ -101,7 +101,6 @@ const TwoFactorAuthentication = ({
           )}
         />
         </Form>
-        </div>
     </SettingCard>
   );
 };

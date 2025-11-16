@@ -10,7 +10,7 @@ const settingsPage = async () => {
   if (!session?.user) return redirect("/");
   return (
     <SettingCard title="Settings" description="Manage your account settings.">
-      <main className="flex flex-1 flex-col lg:flex-row gap-4">
+      <main className="flex flex-1 flex-col lg:flex-row gap-4 mt-5">
         <div className="flex-1">
           <ProfileCard session={session} />
         </div>

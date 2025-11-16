@@ -5,6 +5,7 @@
         "googleusercontent",
         "neondatabase",
         "NEXTAUTH",
-        "paralleldrive"
+        "paralleldrive",
+        "uploadthing"
     ]
 }
