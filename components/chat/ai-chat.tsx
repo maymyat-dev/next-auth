@@ -12,6 +12,7 @@ type Message = {
   role: "user" | "assistant";
   content: string;
   products?: any[];
+  createdAt: string;
 };
 
 export default function AiChat() {
@@ -25,11 +26,11 @@ export default function AiChat() {
   const sendAudioRef = useRef<HTMLAudioElement | null>(null);
   const receiveAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  const time = new Date().toLocaleDateString("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  })
+  const getCurrentTime = () =>
+  new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  }); 
 
   useEffect(() => {
     sendAudioRef.current = new Audio("/sounds/send.mp3");
@@ -72,7 +73,9 @@ export default function AiChat() {
         role: "assistant",
         content:
           "Hello! I'm TechStore AI 🤖. Ask me about products, prices, color, or description.",
+        createdAt: getCurrentTime(),
       },
+      
     ]);
   }, []);
 
@@ -85,6 +88,7 @@ export default function AiChat() {
       id: crypto.randomUUID(),
       role: "user",
       content: input,
+       createdAt: getCurrentTime(),
     };
 
     const historyWithContext = messages.map((msg) => {
@@ -123,6 +127,7 @@ export default function AiChat() {
             ? "Here are some products I found:"
             : "Sorry, I couldn't find anything that matches your request 😢"),
         products: data.products || [],
+        createdAt: getCurrentTime(),
       };
 
       setMessages((prev) => [...prev, aiMessage]);
@@ -134,6 +139,7 @@ export default function AiChat() {
           id: crypto.randomUUID(),
           role: "assistant",
           content: "⚠️ Now limit reached, please try again later. Thank you for your patience.",
+           createdAt: getCurrentTime(),
         },
       ]);
     } finally {
@@ -153,102 +159,102 @@ export default function AiChat() {
 
   return (
     <div className="max-w-7xl px-5 mx-auto md:h-[76vh] h-96 flex flex-col">
-      <div ref={containerRef} className="flex-1 overflow-y-auto no-scrollbar">
+      <div ref={containerRef} className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
+  <div className="space-y-6 pb-[calc(env(safe-area-inset-bottom)+24px)] px-2">
+    {messages.map((message) => (
+      <div
+        key={message.id}
+        className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+      >
         <div
-          className="space-y-6 
-          pb-[calc(env(safe-area-inset-bottom)+16px)]"
+          className={`flex gap-3.5 w-full max-w-[85%] md:max-w-[75%] ${
+            message.role === "user" ? "flex-row-reverse" : "items-start"
+          }`}
         >
-          {messages.map((message) => (
+          {message.role === "assistant" && (
+            <div className="shrink-0 bg-primary/10 dark:bg-primary/20 rounded-xl p-2.5 mt-0.5 shadow-sm border border-primary/10">
+              <BotIcon size={18} className="text-primary" />
+            </div>
+          )}
+
+          <div className={`flex flex-col gap-1.5 min-w-0 ${message.role === "user" ? "items-end" : "items-start"}`}>
             <div
-              key={message.id}
-              className={`flex ${message.role === "user" ? "justify-end text-right" : "justify-start"}`}
+              className={`px-4 py-3 rounded-2xl text-[15px] shadow-sm tracking-wide leading-relaxed border ${
+                message.role === "user"
+                  ? "bg-primary text-white border-primary rounded-tr-none"
+                  : "bg-white/70 dark:bg-card/70 backdrop-blur-md border-neutral-100 dark:border-neutral-800/60 rounded-tl-none text-neutral-800 dark:text-neutral-200"
+              }`}
             >
-              <div
-                className={`flex gap-3 w-full max-w-[90%] md:max-w-[80%] ${
-                  message.role === "user" ? "flex-row-reverse" : "items-start"
-                }`}
+              <ReactMarkdown
+                components={{
+                  img: ({ node, ...props }) => (
+                    <img
+                      {...props}
+                      className="max-w-full md:max-w-md h-auto rounded-xl my-3 shadow-md border border-neutral-100 dark:border-neutral-800 transition-transform hover:scale-[1.01]"
+                      alt={props.alt || "Product Image"}
+                    />
+                  ),
+                  p: ({ children }) => (
+                    <p className="mb-2 last:mb-0">
+                      {children}
+                    </p>
+                  ),
+                }}
               >
-                {message.role === "assistant" && (
-                  <div className="shrink-0 bg-[#E0E7FF] rounded-full md:p-3 p-2 mt-1">
-                    <BotIcon size={20} className="text-primary" />
-                  </div>
-                )}
-
-                <div className="flex flex-col gap-2 min-w-0 flex-1">
-                  <div
-                    className={`px-4 py-2.5 rounded-2xl text-sm shadow-sm border w-fit ${
-                      message.role === "user"
-                        ? "bg-primary text-white border-primary rounded-br-none ml-auto"
-                        : "bg-white dark:bg-card border-gray-100 dark:border-neutral-800 rounded-tl-none"
-                    }`}
-                  >
-                    <ReactMarkdown
-                      components={{
-                        img: ({ node, ...props }) => (
-                          <img
-                            {...props}
-                            className="max-w-60 md:max-w-100 h-auto rounded-xl my-3 shadow-md border border-neutral-100 dark:border-neutral-800"
-                            alt={props.alt || "Product Image"}
-                          />
-                        ),
-                        p: ({ children }) => (
-                          <p className="mb-2 last:mb-0 leading-relaxed text-sm md:text-base">
-                            {children}
-                          </p>
-                        ),
-                      }}
+                {message.content}
+              </ReactMarkdown>
+            </div>
+            
+            {message.products && message.products.length > 0 && (
+              <div className="w-full overflow-hidden mt-1">
+                <div className="flex gap-4 overflow-x-auto pb-3 no-scrollbar scroll-smooth snap-x snap-mandatory">
+                  {message.products.map((product) => (
+                    <div
+                      key={product.id}
+                      className="w-[220px] md:w-[260px] shrink-0 snap-start transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
                     >
-                      {message.content}
-                    </ReactMarkdown>
-                    
-                  </div>
-                  
-                  {message.products && message.products.length > 0 && (
-                    <div className="w-full overflow-hidden">
-                      <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar">
-                        {message.products.map((product) => (
-                          <div
-                            key={product.id}
-                            className="w-50 md:w-60 shrink-0 transition-transform active:scale-95"
-                          >
-                            <ProductCard product={product} isChat />
-                          </div>
-                        ))}
-                      </div>
+                      <ProductCard product={product} isChat />
                     </div>
-                  )}
-                  <span className="text-xs text-gray">{time}</span>
-
+                  ))}
                 </div>
               </div>
-            </div>
-          ))}
-
-          {messages.length === 1 && !loading && (
-            <SuggestionGrid onSelect={handleSuggestionClick} />
-          )}
-
-          {loading && (
-            <div className="flex justify-start">
-              <div className="flex gap-3 max-w-[85%]">
-                <div className="shrink-0 bg-[#E0E7FF] rounded-full md:p-3 p-2 mt-1">
-                  <BotIcon size={20} className="text-primary" />
-                </div>
-
-                <div className="px-4 py-3 bg-white dark:bg-card border rounded-2xl rounded-tl-none shadow-sm">
-                  <div className="flex gap-1.5 items-center h-5">
-                    <span className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                    <span className="w-1.5 h-1.5 bg-primary/60 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div ref={bottomRef} />
+            )}
+            
+            <span className="text-[11px] text-neutral-400 dark:text-neutral-500 px-1 font-medium select-none">
+              {message.createdAt}
+            </span>
+          </div>
         </div>
       </div>
+    ))}
+
+    {messages.length === 1 && !loading && (
+      <div className="mt-4 animate-fade-in">
+        <SuggestionGrid onSelect={handleSuggestionClick} />
+      </div>
+    )}
+
+    {loading && (
+      <div className="flex justify-start animate-pulse">
+        <div className="flex gap-3.5 max-w-[85%] items-start">
+          <div className="shrink-0 bg-primary/10 dark:bg-primary/20 rounded-xl p-2.5 mt-0.5 border border-primary/10">
+            <BotIcon size={18} className="text-primary" />
+          </div>
+
+          <div className="px-5 py-3.5 bg-white/50 dark:bg-card/50 backdrop-blur-md border border-neutral-100 dark:border-neutral-800/60 rounded-2xl rounded-tl-none shadow-sm flex items-center justify-center">
+            <div className="flex gap-1.5 items-center">
+              <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+              <span className="w-2 h-2 bg-primary/80 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+              <span className="w-2 h-2 bg-primary rounded-full animate-bounce"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    <div ref={bottomRef} />
+  </div>
+</div>
 
       <div
         className="fixed md:bottom-0 bottom-18 left-0 w-full z-40 backdrop-blur-md border-t"

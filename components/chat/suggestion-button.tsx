@@ -12,7 +12,7 @@ const SuggestionButton = ({ label, icon: Icon, onClick }: SuggestionButtonProps)
   onClick={onClick}
   className="
     flex items-center justify-center gap-2
-    px-4 py-3 rounded-full text-sm font-medium
+    px-4 py-2 rounded-full text-sm font-medium
 
     bg-gray/5
     border border-gray/10
