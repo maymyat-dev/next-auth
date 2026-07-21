@@ -48,7 +48,7 @@ const SearchBox = ({ productWithVariants }: SearchBoxProps) => {
 
 
       {searchKey && searchResults.length === 0 && (
-        <div className="absolute top-14 w-full max-w-lg rounded-xl border border-gray-200 bg-white dark:bg-gray-700 shadow-md p-6 text-center">
+        <div className="absolute top-14 w-full max-w-lg rounded-xl bg-white dark:bg-card z-20 shadow-md p-6 text-center">
           <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
             No products found
           </p>
@@ -60,7 +60,7 @@ const SearchBox = ({ productWithVariants }: SearchBoxProps) => {
 
 
       {searchResults.length > 0 && (
-        <div className="absolute top-14 w-full max-w-lg rounded-xl border border-gray-200 bg-white dark:bg-gray-700 shadow-xl z-20 max-h-80 overflow-y-auto">
+        <div className="absolute top-14 w-full max-w-lg rounded-xl bg-white dark:bg-card shadow-xl z-20 max-h-80 overflow-y-auto">
           <p className="px-4 py-2 text-xs text-gray-500">
             {searchResults.length} items found
           </p>
