@@ -3,6 +3,8 @@
 import React from "react";
 import type { ComparisonProduct } from "@/ai/tools/compareProducts";
 import { ChartColumnBig } from "lucide-react";
+import formatCurrency from "@/lib/formatCurrency";
+
 
 interface ProductComparisonProps {
   products: ComparisonProduct[];
@@ -11,7 +13,7 @@ const featureKeys = [
   {
     label: "Price",
 
-    getValue: (p: ComparisonProduct) => (p.price != null ? `$${p.price}` : "-"),
+    getValue: (p: ComparisonProduct) => (p.price != null ? formatCurrency(p.price) : "-"),
   },
   {
     label: "Display",
@@ -34,21 +36,25 @@ const featureKeys = [
     getValue: (p: ComparisonProduct) => p.storage ?? "-",
   },
   {
-    label: "Color",
-    getValue: (p: ComparisonProduct) => p.color ?? "-",
-  },
-  {
-    label: "Category",
-    getValue: (p: ComparisonProduct) => p.category ?? "-",
-  },
+  label: "Color",
+  getValue: (p: ComparisonProduct) => (
+    <div className="flex items-center gap-2">
+      <span
+        className="w-3 h-3 rounded-full border shrink-0"
+        style={{ backgroundColor: p.color ?? "#e5e7eb" }}
+      />
+      <span>{p.colorName ?? "-"}</span>
+    </div>
+  ),
+},
 ];
 
 const headerColors = [
-  "text-primary",
-  "text-purple-500",
-  "text-amber-500",
-  "text-green-500",
   "text-pink-500",
+  "text-blue-500",
+  "text-violet-500",
+  "text-orange-500",
+  "text-green-500",
 ];
 
 export const ProductComparison = ({ products }: ProductComparisonProps) => {

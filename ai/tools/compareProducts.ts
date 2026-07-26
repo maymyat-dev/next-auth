@@ -9,8 +9,8 @@ export type ComparisonProduct = {
   title: string;
   name: string;
   price: number;
-  category: string | null;
   color: string | null;
+  colorName: string | null;
   image_url: string | null;
   image: string | null;
   description: string;
@@ -65,7 +65,7 @@ export const createCompareProductsTool = (
               description: products.description,
               price: products.price,
               color: productVariants.color,
-              category: productVariants.colorName,
+              colorName: productVariants.colorName,
               image_url: variantImages.image_url,
             })
             .from(products)
@@ -109,8 +109,8 @@ export const createCompareProductsTool = (
             title: item.title,
             name: item.title,
             price: item.price,
-            category: item.category,
             color: item.color,
+            colorName: item.colorName,
             image_url: item.image_url,
             image: item.image_url,
             description: cleanDescription,
