@@ -158,8 +158,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "productType": {
-          "name": "productType",
+        "colorName": {
+          "name": "colorName",
           "type": "text",
           "primaryKey": false,
           "notNull": true

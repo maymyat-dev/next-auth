@@ -74,7 +74,7 @@ const ProductDetailsPage = async ({ params }: ProductDetailsPageProps) => {
 
 
         <div className="font-bold">
-          Color: <span>{productWithVariants.productType}</span>
+          Color: <span>{productWithVariants.colorName}</span>
         </div>
 
  

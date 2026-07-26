@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 type VariantPickerProps = {
   id: number;
   color: string;
-  productType: string;
+  colorName: string;
   title: string;
   price: number;
   productId: number;
@@ -21,7 +21,7 @@ type VariantPickerProps = {
 const variantPicker = ({
   id,
   color,
-  productType,
+  colorName,
   title,
   price,
   productId,
@@ -29,7 +29,7 @@ const variantPicker = ({
 }: VariantPickerProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const selectedVariantColor = searchParams.get("type") || productType;
+  const selectedVariantColor = searchParams.get("type") || colorName;
   return (
     <>
       <Tooltip>
@@ -37,21 +37,21 @@ const variantPicker = ({
           <div
             onClick={() =>
               router.push(
-                `/products/${id}?vid=${id}&productId=${productId}&type=${productType}&image=${image}&title=${title}&price=${price}`,
+                `/products/${id}?vid=${id}&productId=${productId}&type=${colorName}&image=${image}&title=${title}&price=${price}`,
                 { scroll: false }
               )
             }
             style={{ backgroundColor: color }}
             className={cn(
               "w-8 h-8 rounded-full cursor-pointer",
-              selectedVariantColor === productType
+              selectedVariantColor === colorName
                 ? "ring-2 ring-primary ring-offset-2 scale-110"
                 : "opacity-90 border border-gray-200"
             )}
           ></div>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{productType}</p>
+          <p>{colorName}</p>
         </TooltipContent>
       </Tooltip>
     </>

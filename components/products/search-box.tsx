@@ -74,7 +74,7 @@ const SearchBox = ({ productWithVariants }: SearchBoxProps) => {
               query: {
                 vid: item.id,
                 productId: item.productId,
-                type: item.productType,
+                type: item.colorName,
                 image: item.variantImages[0].image_url,
                 title: item.product.title,
                 price: item.product.price,

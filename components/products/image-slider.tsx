@@ -45,7 +45,7 @@ const ImageSlider = ({ variants }: ImageSliderProps) => {
         <CarouselContent className="">
         {variants.map(
           (v) =>
-            v.productType === currentVariantType &&
+            v.colorName === currentVariantType &&
             v.variantImages.map((img, index) => (
               <CarouselItem
                 key={index}
@@ -69,7 +69,7 @@ const ImageSlider = ({ variants }: ImageSliderProps) => {
       <div className="flex gap-3 mt-6 justify-center">
         {variants.map(
           (v) =>
-            v.productType === currentVariantType &&
+            v.colorName === currentVariantType &&
             v.variantImages.map((img, index) => (
               <button
                 key={index}

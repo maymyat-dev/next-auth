@@ -23,7 +23,7 @@ export const createVariant = actionClient
         id,
         variantImage: vImgs,
         editMode,
-        productType,
+        colorName,
         productId,
       },
     }) => {
@@ -33,7 +33,7 @@ export const createVariant = actionClient
             .update(productVariants)
             .set({
               color,
-              productType,
+              colorName,
               updated: new Date(),
             })
             .where(eq(productVariants.id, id))
@@ -50,7 +50,7 @@ export const createVariant = actionClient
                   tag,
                   variantId: editVariant[0].id,
                 };
-              })
+              }),
             );
           }
           await db
@@ -67,7 +67,7 @@ export const createVariant = actionClient
                   order: index,
                   variantId: editVariant[0].id,
                 };
-              })
+              }),
             );
           }
 
@@ -79,7 +79,7 @@ export const createVariant = actionClient
             .insert(productVariants)
             .values({
               color,
-              productType,
+              colorName,
               productId,
             })
             .returning();
@@ -91,7 +91,7 @@ export const createVariant = actionClient
                   tag,
                   variantId: variant[0].id,
                 };
-              })
+              }),
             );
           }
 
@@ -109,7 +109,7 @@ export const createVariant = actionClient
                   order: index,
                   variantId: variant[0].id,
                 };
-              })
+              }),
             );
           }
           revalidatePath("/dashboard/products");
@@ -119,7 +119,7 @@ export const createVariant = actionClient
         console.log(error);
         return { error: "Something went wrong" };
       }
-    }
+    },
   );
 
 export const deleteVariant = actionClient

@@ -75,7 +75,7 @@ export const createSearchProductsTool = (
       let conditions = [];
 
       if (category) {
-        conditions.push(ilike(productVariants.productType, `%${category}%`));
+        conditions.push(ilike(productVariants.colorName, `%${category}%`));
       }
       console.log("Final Search Query:", searchQuery);
       console.log("Search Words:", searchWords);
@@ -88,7 +88,7 @@ export const createSearchProductsTool = (
               or(
                 ilike(products.title, `%${word}%`),
                 ilike(products.description, `%${word}%`),
-                ilike(productVariants.productType, `%${word}%`),
+                ilike(productVariants.colorName, `%${word}%`),
               ),
             );
           }
@@ -137,7 +137,7 @@ export const createSearchProductsTool = (
           price: products.price,
           variantId: productVariants.id,
           color: productVariants.color,
-          category: productVariants.productType,
+          category: productVariants.colorName,
           image_url: variantImages.image_url,
           name: variantImages.name,
           size: variantImages.size,

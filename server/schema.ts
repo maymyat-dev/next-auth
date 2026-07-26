@@ -53,7 +53,7 @@ export const accounts = pgTable(
         columns: [account.provider, account.providerAccountId],
       }),
     },
-  ]
+  ],
 );
 
 export const emailVerificationToken = pgTable(
@@ -68,7 +68,7 @@ export const emailVerificationToken = pgTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.id, vt.token] }),
-  })
+  }),
 );
 
 export const resetPasswordVerificationToken = pgTable(
@@ -83,7 +83,7 @@ export const resetPasswordVerificationToken = pgTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.id, vt.token] }),
-  })
+  }),
 );
 
 export const twoFactorToken = pgTable(
@@ -103,7 +103,7 @@ export const twoFactorToken = pgTable(
         columns: [token.id, token.token],
       }),
     },
-  ]
+  ],
 );
 
 export const products = pgTable("products", {
@@ -117,7 +117,7 @@ export const products = pgTable("products", {
 export const productVariants = pgTable("productsVariants", {
   id: serial("id").primaryKey(),
   color: text("color").notNull(),
-  productType: text("productType").notNull(),
+  colorName: text("colorName").notNull(),
   updated: timestamp("updated").defaultNow(),
   productId: integer("productId")
     .notNull()
@@ -135,7 +135,7 @@ export const variantImages = pgTable("variantImages", {
     .references(() => productVariants.id, { onDelete: "cascade" }),
 });
 
-  export const variantTags = pgTable("variantTags", {
+export const variantTags = pgTable("variantTags", {
   id: serial("id").primaryKey(),
   tag: text("tag").notNull(),
   variantId: integer("variantId")
@@ -156,28 +156,26 @@ export const productVariantsRelations = relations(
     }),
     variantImages: many(variantImages),
     variantTags: many(variantTags),
-  })
+  }),
 );
 
-export const variantImagesRelations = relations(variantImages, ({ one })=> ({
+export const variantImagesRelations = relations(variantImages, ({ one }) => ({
   productVariant: one(productVariants, {
     fields: [variantImages.variantId],
     references: [productVariants.id],
-  })
-}))
+  }),
+}));
 
-
-export const variantTagsRelations = relations(variantTags, ({ one })=> ({
-  productVariant
-  : one(productVariants, {
+export const variantTagsRelations = relations(variantTags, ({ one }) => ({
+  productVariant: one(productVariants, {
     fields: [variantTags.variantId],
     references: [productVariants.id],
-  })
-}))
+  }),
+}));
 
 export const userRelations = relations(users, ({ many }) => ({
   orders: many(orders, { relationName: "user_orders" }),
-}))
+}));
 
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
@@ -189,8 +187,7 @@ export const orders = pgTable("orders", {
   paymentIntentId: text("payment_intent_id").unique().notNull(),
   created: timestamp("created").defaultNow(),
   receiptURL: text("receiptURL"),
-  
-})
+});
 
 export const ordersRelations = relations(orders, ({ one, many }) => ({
   user: one(users, {
@@ -199,19 +196,22 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
     relationName: "user_orders",
   }),
   orderProduct: many(orderProduct, { relationName: "orderProduct" }),
-}))
+}));
 
 export const orderProduct = pgTable("orderProduct", {
   id: serial("id").primaryKey(),
   quantity: integer("quantity").notNull(),
-  productVariantID: integer("productVariantID")
-    .references(() => productVariants.id, { onDelete: "cascade" }),
+  productVariantID: integer("productVariantID").references(
+    () => productVariants.id,
+    { onDelete: "cascade" },
+  ),
   productID: integer("productID")
     .notNull()
     .references(() => products.id, { onDelete: "cascade" }),
-  orderID: integer("orderID").notNull().references(() => orders.id, { onDelete: "cascade" }),
-})
-
+  orderID: integer("orderID")
+    .notNull()
+    .references(() => orders.id, { onDelete: "cascade" }),
+});
 
 export const orderProductRelations = relations(orderProduct, ({ one }) => ({
   order: one(orders, {
@@ -229,4 +229,4 @@ export const orderProductRelations = relations(orderProduct, ({ one }) => ({
     references: [productVariants.id],
     relationName: "productVariants",
   }),
-}))
+}));

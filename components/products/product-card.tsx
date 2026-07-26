@@ -13,7 +13,7 @@ export const ProductCard = ({ product, isChat = false }: ProductCardProps) => {
   const productId = product.productId || product.id;
   const title = product.product?.title || product.title;
   const price = product.product?.price || product.price;
-  const type = product.productType || product.type;
+  const type = product.colorName || product.type;
   const rawDescription = product.product?.description || product.description;
 
 

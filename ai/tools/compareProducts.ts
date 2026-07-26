@@ -65,7 +65,7 @@ export const createCompareProductsTool = (
               description: products.description,
               price: products.price,
               color: productVariants.color,
-              category: productVariants.productType,
+              category: productVariants.colorName,
               image_url: variantImages.image_url,
             })
             .from(products)
@@ -95,14 +95,14 @@ export const createCompareProductsTool = (
         .map((item) => {
           const rawDescription = item.description || "";
 
-         const cleanDescription = rawDescription
-           .replace(/<\/li>/gi, "\n")
-           .replace(/<\/p>/gi, "\n")
-           .replace(/<br\s*\/?>/gi, "\n")
-           .replace(/<[^>]*>/g, "")
-           .replace(/\n+/g, "\n")
-           .trim();
-              const specs = parseSpecs(cleanDescription);
+          const cleanDescription = rawDescription
+            .replace(/<\/li>/gi, "\n")
+            .replace(/<\/p>/gi, "\n")
+            .replace(/<br\s*\/?>/gi, "\n")
+            .replace(/<[^>]*>/g, "")
+            .replace(/\n+/g, "\n")
+            .trim();
+          const specs = parseSpecs(cleanDescription);
 
           return {
             id: item.id,

@@ -1,7 +1,7 @@
 CREATE TABLE "productsVariants" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"color" text NOT NULL,
-	"productType" text NOT NULL,
+	"colorName" text NOT NULL,
 	"updated" timestamp DEFAULT now(),
 	"productId" serial NOT NULL
 );

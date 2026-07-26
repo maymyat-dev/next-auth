@@ -55,7 +55,7 @@ const VariantDialog = ({
       color: "#000",
       productId,
       id: undefined,
-      productType: "Black ",
+      colorName: "Black ",
       editMode,
     },
   });
@@ -94,13 +94,13 @@ const VariantDialog = ({
 
   function onSubmit(values: z.infer<typeof VariantSchema>) {
     console.log(values);
-    const { color, tags, variantImage, productType, productId, id, editMode } =
+    const { color, tags, variantImage, colorName, productId, id, editMode } =
       values;
     execute({
       color,
       tags,
       variantImage,
-      productType,
+      colorName,
       productId,
       id,
       editMode,
@@ -129,7 +129,7 @@ const VariantDialog = ({
           };
         })
       );
-      form.setValue("productType", variant.productType);
+      form.setValue("colorName", variant.colorName);
       form.setValue("productId", variant.productId);
     }
   };
@@ -152,7 +152,7 @@ const VariantDialog = ({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="productType"
+              name="colorName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Variant Title</FormLabel>
