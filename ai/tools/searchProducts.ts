@@ -14,7 +14,7 @@ type ProductSearchResult = {
   price: number;
   variantId: number | null;
   color: string | null;
-  type: string | null;
+  category: string | null;
   image_url: string | null;
   name: string | null;
   size: string | null;
@@ -30,13 +30,11 @@ export const createSearchProductsTool = (
       query: z.string(),
       maxPrice: z.number().optional(),
       minPrice: z.number().optional(),
-      type: z.string().optional(),
+      category: z.string().optional(),
     }),
 
-    execute: async ({ query, maxPrice, minPrice, type }) => {
-      
+    execute: async ({ query, maxPrice, minPrice, category }) => {
       let searchQuery = query.toLowerCase().trim();
-      
 
       Object.entries(SYNONYM_MAP).forEach(([key, value]) => {
         const regex = new RegExp(`\\b${key}\\b`, "g");
@@ -73,12 +71,11 @@ export const createSearchProductsTool = (
 
         return !isPriceStopWord && !isPriceValue && !isModelNumber;
       });
-      
 
       let conditions = [];
 
-      if (type) {
-        conditions.push(ilike(productVariants.productType, `%${type}%`));
+      if (category) {
+        conditions.push(ilike(productVariants.productType, `%${category}%`));
       }
       console.log("Final Search Query:", searchQuery);
       console.log("Search Words:", searchWords);
@@ -86,7 +83,7 @@ export const createSearchProductsTool = (
 
       if (searchWords.length > 0) {
         searchWords.forEach((word) => {
-          if (word !== type?.toLowerCase()) {
+          if (word !== category?.toLowerCase()) {
             conditions.push(
               or(
                 ilike(products.title, `%${word}%`),
@@ -140,7 +137,7 @@ export const createSearchProductsTool = (
           price: products.price,
           variantId: productVariants.id,
           color: productVariants.color,
-          type: productVariants.productType,
+          category: productVariants.productType,
           image_url: variantImages.image_url,
           name: variantImages.name,
           size: variantImages.size,
@@ -163,7 +160,8 @@ export const createSearchProductsTool = (
       const aiResults = uniqueResults.map((p) => ({
         title: p.title,
         price: p.price,
-        color: p.type,
+        color: p.color,
+        category: p.category,
         image: p.image_url,
         description: p.description
           .replace(/<[^>]*>/g, " ")

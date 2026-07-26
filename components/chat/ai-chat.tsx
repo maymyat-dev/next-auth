@@ -2,16 +2,19 @@
 
 import { Sparkles, Send } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 import { ProductCard } from "../products/product-card";
-import ReactMarkdown from "react-markdown";
 import SuggestionGrid from "./suggestion-grid";
+import { ProductComparison } from "./product-comparison";
+import type { ComparisonProduct } from "@/ai/tools/compareProducts";
 
 type Message = {
   id: string;
   role: "user" | "assistant";
   content: string;
   products?: any[];
+  comparison?: ComparisonProduct[];
   createdAt: string;
 };
 
@@ -19,7 +22,7 @@ const createInitialMessage = (): Message => ({
   id: "welcome-message",
   role: "assistant",
   content:
-    "👋 Welcome to TechStore AI! Tell me what you're looking for, and I'll help you find the right product.",
+    "Welcome to TechStore AI! Tell me what you're looking for, and I'll help you find the right product.",
   createdAt: new Date().toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
@@ -27,11 +30,10 @@ const createInitialMessage = (): Message => ({
 });
 
 export default function AiChat() {
-
   const [chatInput, setChatInput] = useState("");
   const [messages, setMessages] = useState<Message[]>(() => [
-  createInitialMessage(),
-]);
+    createInitialMessage(),
+  ]);
   const [loading, setLoading] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -85,12 +87,23 @@ export default function AiChat() {
     };
 
     const historyWithContext = messages.map((msg) => {
-      if (msg.role === "assistant" && msg.products?.length) {
+      if (
+        msg.role === "assistant" &&
+        (msg.products?.length || msg.comparison)
+      ) {
+
+        const minimalProducts = msg.products?.map((p) => ({
+          id: p.id,
+          title: p.title || p.name,
+          price: p.price,
+        }));
+
         return {
           ...msg,
-          content: `${msg.content}\n\n[SYSTEM_CONTEXT: ${JSON.stringify(
-            msg.products,
-          )}]`,
+          content: `${msg.content}\n\n[SYSTEM_CONTEXT:\n${JSON.stringify({
+            products: minimalProducts,
+            comparison: msg.comparison,
+          })}\n]`,
         };
       }
       return msg;
@@ -110,16 +123,20 @@ export default function AiChat() {
       });
 
       const data = await res.json();
+      console.log("CHAT RESPONSE:", data);
 
       const aiMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
         content:
           data.text ||
-          (data.products?.length
-            ? "Here are some products I found:"
-            : "Sorry, I couldn't find anything that matches your request 😢"),
+          (data.comparison
+            ? "Here is your product comparison:"
+            : data.products?.length
+              ? "Here are some products I found:"
+              : "Sorry, I couldn't find anything that matches your request 😢"),
         products: data.products || [],
+        comparison: data.comparison,
         createdAt: getCurrentTime(),
       };
 
@@ -132,7 +149,7 @@ export default function AiChat() {
           id: crypto.randomUUID(),
           role: "assistant",
           content:
-            "⚠️ Rate limit reached, please try again later. Thank you for your patience.",
+            "⚠️ Rate limit reached or connection issue, please try again later. Thank you for your patience.",
           createdAt: getCurrentTime(),
         },
       ]);
@@ -161,7 +178,9 @@ export default function AiChat() {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} animate-in fade-in slide-in-from-bottom-2 duration-300`}
+            className={`flex ${
+              message.role === "user" ? "justify-end" : "justify-start"
+            } animate-in fade-in slide-in-from-bottom-2 duration-300`}
           >
             <div
               className={`flex gap-3 max-w-[85%] md:max-w-175 ${
@@ -188,7 +207,7 @@ export default function AiChat() {
                 )}
 
                 <div
-                  className={`px-5 py-3.5 rounded-3xl text-[14.5px] leading-relaxed shadow-sm ${
+                  className={`px-5 py-3.5 rounded-3xl text-[14.5px] w-full leading-relaxed shadow-sm ${
                     message.role === "user"
                       ? "bg-primary shadow-primary/20 rounded-tr-xs font-medium text-white"
                       : "bg-white/70 dark:bg-card/60 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-tl-xs text-neutral-800 dark:text-neutral-100 shadow-neutral-200/50 dark:shadow-none"
@@ -211,13 +230,17 @@ export default function AiChat() {
                     {message.content}
                   </ReactMarkdown>
 
+                  {message.comparison && message.comparison.length >= 2 && (
+                    <ProductComparison products={message.comparison} />
+                  )}
+
                   {message.products && message.products.length > 0 && (
                     <div className="w-full overflow-hidden mt-3 pt-2 border-t border-neutral-200/40 dark:border-neutral-700/40">
                       <div className="flex gap-3.5 overflow-x-auto pb-2 pt-1 no-scrollbar scroll-smooth snap-x">
                         {message.products.map((product) => (
                           <div
                             key={product.id}
-                            className="w-52.5 md:w-60 shrink-0 snap-start transition-transform hover:-translate-y-1"
+                            className="w-52 md:w-50 shrink-0 snap-start transition-transform hover:-translate-y-1"
                           >
                             <ProductCard product={product} isChat />
                           </div>
@@ -282,8 +305,9 @@ export default function AiChat() {
             />
 
             <button
+              type="submit"
               disabled={!chatInput.trim() || loading}
-              className="bg-linear-to-r from-primary to-purple-600 p-3 rounded-full disabled:opacity-40 transition-transform active:scale-95 shadow-md shadow-primary/30"
+              className="bg-linear-to-r from-primary to-purple-600 p-3 rounded-full text-white disabled:opacity-40 transition-transform active:scale-95 shadow-md shadow-primary/30"
             >
               <Send size={16} />
             </button>

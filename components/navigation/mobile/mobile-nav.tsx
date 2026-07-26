@@ -1,6 +1,6 @@
 "use client";
 
-import { BotIcon } from "lucide-react";
+import { BotIcon, Sparkle, Sparkles } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -15,7 +15,7 @@ const MobileNav = () => {
     return (
       <>
         <div className="md:hidden fixed bottom-0 left-0 w-full z-50">
-          <div className="relative flex items-center justify-between rounded-4xl backdrop-blur-xl shadow-primary/10 border border-black/5 dark:border-white/10">
+          <div className="relative flex items-center justify-between rounded-4xl backdrop-blur-3xl shadow-primary/10 border border-black/5 dark:border-white/10">
             <div className="flex flex-1 justify-around items-center">
               {mobileMenus.slice(0, 2).map((menu, index) => (
                 <Link
@@ -37,7 +37,7 @@ const MobileNav = () => {
             <div className="relative -top-6">
               <Link href="/ai-assistant">
                 <div className="bg-primary p-4 rounded-full shadow-lg shadow-primary/40 border-4 border-background animate-pulse-slow">
-                  <BotIcon className="text-white" size={28} />
+                  <Sparkles className="text-white" size={28} />
                 </div>
               </Link>
             </div>

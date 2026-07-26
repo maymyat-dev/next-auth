@@ -77,18 +77,18 @@ const UserButton = ({ user }: UserButtonProps) => {
                 await signOut({redirect: false});
                 window.location.href ="/"
               }}
-              className="cursor-pointer flex items-center gap-3 text-sm font-medium hover:text-red-500"
+              className="cursor-pointer flex items-center gap-3 text-sm font-medium"
             >
-              <LogOut className="w-6 h-6 hover:text-red-500" />
+              <LogOut className="w-6 h-6" />
               Log out
               <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <Button asChild variant="secondary" className="hover:shadow-md h-[36px]">
+        <Button asChild className="bg-primary text-primary-foreground rounded-full ">
           <Link href="/auth/login" className="flex items-center">
-            <LogIn className="mr-2" size={16} /> Sign In
+            <LogIn className="mr-1" size={16} /> Sign In
           </Link>
         </Button>
       )}

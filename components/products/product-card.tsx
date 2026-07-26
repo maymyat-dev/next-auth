@@ -14,60 +14,74 @@ export const ProductCard = ({ product, isChat = false }: ProductCardProps) => {
   const title = product.product?.title || product.title;
   const price = product.product?.price || product.price;
   const type = product.productType || product.type;
-  const description = product.product?.description || product.description;
+  const rawDescription = product.product?.description || product.description;
+
+
+  const cleanDescription = rawDescription
+    ? rawDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()
+    : "";
+
   const imageUrl =
     product.variantImages?.[0]?.image_url ||
     product.image_url ||
     "/images/placeholder-product.png";
 
   return (
-   <Link
-  href={{
-    pathname: `/products/${id}`,
-    query: {
-      vid: id,
-      productId: productId,
-      type: type,
-      image: imageUrl,
-      title: title,
-      price: price,
-    },
-  }}
-  className={`group rounded-2xl block border border-neutral-100 dark:border-neutral-800 hover:shadow-xl hover:shadow-primary/5 
-    ${isChat ? "p-3" : "p-4"}`}
->
-  <div className="relative aspect-square overflow-hidden rounded-xl bg-neutral-100/50 dark:bg-black/30 mb-4 border border-black/5 dark:border-white/5">
-    <Image
-      src={imageUrl}
-      alt={title}
-      fill
-      className="object-contain p-4 transition-transform duration-500 group-hover:scale-110 dark:mix-blend-lighten"
-    />
-    <div className="absolute inset-0 bg-linear-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-  </div>
+    <Link
+      href={{
+        pathname: `/products/${id}`,
+        query: {
+          vid: id,
+          productId: productId,
+          type: type,
+          image: imageUrl,
+          title: title,
+          price: price,
+        },
+      }}
+      className={`group relative flex flex-col justify-between rounded-2xl bg-card border border-border/60 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all ${
+        isChat ? "p-2.5" : "p-3 sm:p-4"
+      }`}
+    >
+      <div>
+        <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-900/80 mb-3 border border-black/5 dark:border-white/5 flex items-center justify-center p-3">
+          <Image
+            src={imageUrl}
+            alt={title}
+            fill
+            sizes="(max-width: 768px) 50vw, 33vw"
+            className="object-contain p-2 transition-transform group-hover:scale-105"
+          />
+        </div>
 
-  <div className="space-y-1 px-1">
-    <p className="text-[10px] text-primary font-bold uppercase tracking-widest opacity-70">
-      {type}
-    </p>
-    <h3 className="font-semibold text-neutral-800 dark:text-neutral-200 truncate group-hover:text-primary transition-colors text-sm">
-      {title}
-    </h3>
-    {description && (
-      <div
-        className="prose prose-neutral max-w-none line-clamp-2 text-sm leading-relaxed dark:prose-invert opacity-60 pointer-events-none"
-        dangerouslySetInnerHTML={{ __html: description }}
-      />
-    )}
-    <div className="flex items-center justify-between pt-2">
-      <p className="font-black text-neutral-900 dark:text-white">
-        {formatCurrency(price)}
-      </p>
-      <div className="bg-primary/10 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-all p-2">
-        <ShoppingBasket size={16} />
+        <div className="space-y-1">
+          {type && (
+            <p className="text-[10px] text-primary font-bold uppercase tracking-wider">
+              {type}
+            </p>
+          )}
+
+          <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors text-xs sm:text-sm">
+            {title}
+          </h3>
+
+          {cleanDescription && (
+            <p className="text-[11px] sm:text-xs text-muted-foreground line-clamp-1 leading-normal opacity-80">
+              {cleanDescription}
+            </p>
+          )}
+        </div>
       </div>
-    </div>
-  </div>
-</Link>
+
+      <div className="flex items-center justify-between pt-3 mt-2 border-t border-border/40">
+        <p className="font-bold text-xs sm:text-sm text-foreground">
+          {formatCurrency(price)}
+        </p>
+
+        <div className="bg-primary/10 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-all p-1.5 sm:p-2 shrink-0">
+          <ShoppingBasket className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+        </div>
+      </div>
+    </Link>
   );
 };
